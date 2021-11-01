@@ -1,0 +1,207 @@
+#!/bin/bash
+
+# filenamefix
+#
+# Copyright 2021 Alex Greenwood
+#
+# This program is free software...
+#
+# This program is distributed with NO WARRANTY...
+#
+# This program is meant to be run as a cron job to regularly correct the names of NMR data folders
+# that will cause problems on a Windows file system. It checks for folders in user/nmr/ in the specified 
+# directory with names that either end in a period or that would be identical to names of folders in 
+# the same directory on a case-insensitive file-system (for example, user/nmr/Spectrum and 
+# user/nmr/spectrum). It checks whether all subfolders in the identified directories have fid or 
+# ser files, ensuring that data isn't currently being acquired in the directory. If not, the folder 
+# name is then fixed (either the period is removed, a (1) or (2) or (3) etc is appended to it, or 
+# both.) In the case of identically-named folders, the program only renames the most-recently formed
+# folder and the program exits. If there are multiple instances of identically-named folders, the 
+# second-most recent folder will be renamed the next time the program is run and so-on. 
+#
+
+set -u
+#set -Ee
+#trap "Send_Email greenwa2@ucmail.uc.edu emailtxt_scriptissue scripterror" ERR
+
+##default parameter/flag settings -- change these if you wish
+
+ManagerEmail='greenwa2@ucmail.uc.edu'
+SendmailPath='/usr/sbin'
+
+##functions
+
+#This function displays usage information if there is no recognizable input file argument.
+function Show_Usage() {
+	echo ""
+	echo "Usage: filenamefix [OPTIONS]... path/to/data"
+	echo ""
+	echo "Options"
+	echo " -h, -?, --help                           Show this help message."
+	echo ""
+	echo " -p, --path                               Set path to data (flag optional)."
+    echo ""
+	echo " -e, --email (default '')                 Provide an email address to recieve emails when"
+	echo "                                          folders are renamed."
+    echo ""
+	echo "For more information, please see the README file:"
+	echo "https://github.com/greenwoodad/filenamefix/README.md"
+	echo ""
+}
+
+function parse_flags () {
+
+while [[ ! -z "${1-}" ]] ; do
+	case "$1" in
+		-h|-\?|--help)
+			Show_Usage
+			exit 1
+			;;
+		-p|--path)
+			shift
+			DataPath="$1"
+			;;
+        -e|--email)
+            shift
+            ManagerEmail="$1"
+            ;;
+                -*)
+			echo "Unknown option: \"$1\""
+			Show_Usage
+			exit 1
+			;;
+		*)
+			DataPath="$1"
+			;;			
+	esac
+
+	shift
+done
+}
+
+#This function is used to send emails when folders are renamed.
+function Send_Email () {
+{
+	echo "From: Do-Not-Reply@NMR-Facility"
+	echo "To: $1"
+	echo "Subject: NMR data renamed"
+	echo
+	echo "The spectrum $spectrum has been renamed to $newname" 
+} | "$SendmailPath"/sendmail -t
+}
+
+
+#This function checks and makes sure there are (non-empty) fid or ser files in
+#all subdirectories of $spectrum
+ 
+function findfids () {
+
+	while IFS= read -r subfolder ; do
+		echo "looking in $subfolder"
+        	if [[ -s "$subfolder/fid" || -s "$subfolder/ser" ]]; then
+	                echo "there's a fid or ser"
+                else
+                        MoveFlag='n'
+			echo "no fid or ser yet-- skip this for now"
+                fi
+        done < <(echo "${subfolders}")
+
+}
+
+#This function finds an appropriate name (that doesn't already exist) for a folder
+#that needs to be renamed
+
+function getname () {
+
+newnamebase="$1"
+newname="$newnamebase"
+
+for ((i=1;i<100;i++)); do
+	if ! [[ -d "$newname" ]]; then
+		break
+	else 
+		newname="$newnamebase($i)"
+	fi
+
+done
+
+}
+
+#Main body of script
+
+parse_flags "$@"
+
+echo "data path = $DataPath"
+
+if ! [[ -d $DataPath ]]; then
+	echo "$DataPath does not exist. Exiting."
+	exit 1
+fi
+
+#This generates a list of names of spectra that end in periods and renames them
+
+	#generate a list of file names ending in a period
+	PdSpectra=$(find "$DataPath"/*/nmr/*. -maxdepth 0 -type d 2> /dev/null)	
+	if [[ "$PdSpectra" != '' ]]; then
+        while IFS= read -r spectrum ; do
+		
+                subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
+                MoveFlag='y'
+                
+		findfids
+		sleep 1 
+		findfids
+
+                if [[ "$MoveFlag" == 'y' ]]; then
+			newnamebase=$(echo "$spectrum" | sed 's/\.$//')
+                        getname "$newnamebase"
+			mv "$spectrum" "$newname"
+                        echo "$spectrum renamed to $newname"
+			
+			if ! [[ "$ManagerEmail" == '' ]]; then
+				Send_Email "$ManagerEmail"
+			else
+				echo "no email address"
+			fi
+                fi
+
+        done < <(echo "${PdSpectra}")
+	fi
+
+        #generate a list of duplicate file names differing only in case, with most recent folders on top
+	DupSpectra=$(cd "$DataPath"; find "$DataPath"/*/nmr/ -maxdepth 1 -name .svn -type d -prune -false -o 	\
+	 -printf "%T@ %Tc %p\n"  | sort -n | grep "$DataPath"'.*' -o | tac | perl -ne 				\
+	'push @{$f{lc($_)}}, $_; END{map{print @{$f{$_}}} grep {@{$f{$_}}>1} sort keys %f}')
+#Rename them
+
+ if [[ "$DupSpectra" != '' ]]; then
+
+	while IFS= read -r spectrum ; do
+		
+		subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
+		MoveFlag='y'
+      		
+		findfids
+		sleep 1
+		findfids
+	
+		if [[ "$MoveFlag" == 'y' ]]; then
+			getname "$spectrum"
+			mv "$spectrum" "$newname"
+			echo "$spectrum renamed to $newname"
+
+                        if ! [[ "$ManagerEmail" == '' ]]; then
+                                Send_Email "$ManagerEmail"
+                        else
+                                echo "no email address"
+                        fi
+
+			exit 1
+		fi
+
+    	done < <(echo "${DupSpectra}")
+	
+fi	
+	
+	
+exit 1
