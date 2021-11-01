@@ -21,12 +21,10 @@
 #
 
 set -u
-#set -Ee
-#trap "Send_Email greenwa2@ucmail.uc.edu emailtxt_scriptissue scripterror" ERR
 
 ##default parameter/flag settings -- change these if you wish
 
-ManagerEmail='greenwa2@ucmail.uc.edu'
+ManagerEmail=''
 SendmailPath='/usr/sbin'
 
 ##functions
@@ -40,10 +38,10 @@ function Show_Usage() {
 	echo " -h, -?, --help                           Show this help message."
 	echo ""
 	echo " -p, --path                               Set path to data (flag optional)."
-    echo ""
+        echo ""
 	echo " -e, --email (default '')                 Provide an email address to recieve emails when"
 	echo "                                          folders are renamed."
-    echo ""
+        echo ""
 	echo "For more information, please see the README file:"
 	echo "https://github.com/greenwoodad/filenamefix/README.md"
 	echo ""
@@ -61,10 +59,10 @@ while [[ ! -z "${1-}" ]] ; do
 			shift
 			DataPath="$1"
 			;;
-        -e|--email)
-            shift
-            ManagerEmail="$1"
-            ;;
+        	-e|--email)
+            		shift
+            		ManagerEmail="$1"
+            		;;
                 -*)
 			echo "Unknown option: \"$1\""
 			Show_Usage
@@ -89,7 +87,6 @@ function Send_Email () {
 	echo "The spectrum $spectrum has been renamed to $newname" 
 } | "$SendmailPath"/sendmail -t
 }
-
 
 #This function checks and makes sure there are (non-empty) fid or ser files in
 #all subdirectories of $spectrum
@@ -149,7 +146,7 @@ fi
                 MoveFlag='y'
                 
 		findfids
-		sleep 1 
+		sleep 10 
 		findfids
 
                 if [[ "$MoveFlag" == 'y' ]]; then
@@ -182,7 +179,7 @@ fi
 		MoveFlag='y'
       		
 		findfids
-		sleep 1
+		sleep 10
 		findfids
 	
 		if [[ "$MoveFlag" == 'y' ]]; then
