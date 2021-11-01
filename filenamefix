@@ -146,8 +146,11 @@ fi
                 MoveFlag='y'
                 
 		findfids
-		sleep 10 
-		findfids
+		if [[ "$MoveFlag" == 'y' ]]; then
+			sleep 10 
+			subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
+			findfids
+		fi
 
                 if [[ "$MoveFlag" == 'y' ]]; then
 			newnamebase=$(echo "$spectrum" | sed 's/\.$//')
@@ -169,9 +172,9 @@ fi
 	DupSpectra=$(cd "$DataPath"; find "$DataPath"/*/nmr/ -maxdepth 1 -name .svn -type d -prune -false -o 	\
 	 -printf "%T@ %Tc %p\n"  | sort -n | grep "$DataPath"'.*' -o | tac | perl -ne 				\
 	'push @{$f{lc($_)}}, $_; END{map{print @{$f{$_}}} grep {@{$f{$_}}>1} sort keys %f}')
+	
 #Rename them
-
- if [[ "$DupSpectra" != '' ]]; then
+if [[ "$DupSpectra" != '' ]]; then
 
 	while IFS= read -r spectrum ; do
 		
@@ -179,8 +182,11 @@ fi
 		MoveFlag='y'
       		
 		findfids
-		sleep 10
-		findfids
+		if [[ "$MoveFlag" == 'y' ]]; then
+			sleep 10 
+			subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
+			findfids
+		fi
 	
 		if [[ "$MoveFlag" == 'y' ]]; then
 			getname "$spectrum"
