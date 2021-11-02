@@ -151,7 +151,7 @@ if [[ "$PdSpectra" != '' ]]; then
                 
 		findfids
 		if [[ "$MoveFlag" == 'y' ]]; then
-			sleep 10 
+			sleep 10  #This is to make sure a new spectrum wasn't just about to start
 			subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
 			findfids
 		fi
@@ -187,7 +187,7 @@ if [[ "$DupSpectra" != '' ]]; then
       		
 		findfids
 		if [[ "$MoveFlag" == 'y' ]]; then
-			sleep 10 
+			sleep 10 #This is to make sure a new spectrum wasn't just about to start
 			subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
 			findfids
 		fi
