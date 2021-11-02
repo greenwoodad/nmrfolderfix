@@ -47,6 +47,7 @@ function Show_Usage() {
 	echo ""
 }
 
+#This function parses options input
 function parse_flags () {
 
 while [[ ! -z "${1-}" ]] ; do
@@ -130,6 +131,7 @@ parse_flags "$@"
 
 echo "data path = $DataPath"
 
+#Exit if data path is not properly specified
 if ! [[ -d $DataPath ]]; then
 	echo "$DataPath does not exist. Exiting."
 	exit 1
@@ -137,12 +139,13 @@ fi
 
 #This generates a list of names of spectra that end in periods and renames them
 
-	#generate a list of file names ending in a period
-	PdSpectra=$(find "$DataPath"/*/nmr/*. -maxdepth 0 -type d 2> /dev/null)	
-	if [[ "$PdSpectra" != '' ]]; then
+#generate a list of file names ending in a period
+PdSpectra=$(find "$DataPath"/*/nmr/*. -maxdepth 0 -type d 2> /dev/null)	
+
+if [[ "$PdSpectra" != '' ]]; then
         while IFS= read -r spectrum ; do
 		
-                subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
+                subfolders=$(find "$spectrum"/* -maxdepth 0 -type d) #subfolders of experiment folder
                 MoveFlag='y'
                 
 		findfids
