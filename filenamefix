@@ -13,11 +13,12 @@
 # directory with names that either end in a period or that would be identical to names of folders in 
 # the same directory on a case-insensitive file-system (for example, user/nmr/Spectrum and 
 # user/nmr/spectrum). It checks whether all subfolders in the identified directories have fid or 
-# ser files, ensuring that data isn't currently being acquired in the directory. If not, the folder 
-# name is then fixed (either the period is removed, a (1) or (2) or (3) etc is appended to it, or 
-# both.) In the case of identically-named folders, the program only renames the most-recently formed
-# folder and the program exits. If there are multiple instances of identically-named folders, the 
-# second-most recent folder will be renamed the next time the program is run and so-on. 
+# (finished) ser files, ensuring that data isn't currently being acquired in the directory. If data, 
+# is finished acquiring, the folder name is then fixed (either the period is removed, a (1) or (2) 
+# or (3) etc is appended to it, or both.) In the case of identically-named folders, the program only 
+# renames the most-recently formed folder and the program exits. If there are multiple instances of 
+# identically-named folders, the second-most recent folder will be renamed the next time the program 
+# is run and so-on. 
 #
 
 set -u
@@ -89,15 +90,15 @@ function Send_Email () {
 } | "$SendmailPath"/sendmail -t
 }
 
-#This function checks and makes sure there are (non-empty) fid or ser files in
+#This function checks and makes sure there are (non-empty) fid or (not updated in past 30 min) ser files in
 #all subdirectories of $spectrum
  
 function findfids () {
 
 	while IFS= read -r subfolder ; do
 		echo "looking in $subfolder"
-        	if [[ -s "$subfolder/fid" || -s "$subfolder/ser" ]]; then
-	                echo "there's a fid or ser"
+        	if [[ -s "$subfolder/fid" || `find $subfolder/ser -mmin +30 | egrep '.*'` ]]; then
+	                echo "there's a fid or finished ser"
                 else
                         MoveFlag='n'
 			echo "no fid or ser yet-- skip this for now"
@@ -129,13 +130,13 @@ done
 
 parse_flags "$@"
 
-echo "data path = $DataPath"
-
 #Exit if data path is not properly specified
 if ! [[ -d $DataPath ]]; then
 	echo "$DataPath does not exist. Exiting."
 	exit 1
 fi
+
+echo "data path = $DataPath"
 
 #This generates a list of names of spectra that end in periods and renames them
 
@@ -172,7 +173,7 @@ if [[ "$PdSpectra" != '' ]]; then
 	fi
 
         #generate a list of duplicate file names differing only in case, with most recent folders on top
-	DupSpectra=$(cd "$DataPath"; find "$DataPath"/*/nmr/ -maxdepth 1 -name .svn -type d -prune -false -o 	\
+	DupSpectra=$(find "$DataPath"/*/nmr/* -maxdepth 0 -name .svn -type d -prune -false -o 	\
 	 -printf "%T@ %Tc %p\n"  | sort -n | grep "$DataPath"'.*' -o | tac | perl -ne 				\
 	'push @{$f{lc($_)}}, $_; END{map{print @{$f{$_}}} grep {@{$f{$_}}>1} sort keys %f}')
 	
