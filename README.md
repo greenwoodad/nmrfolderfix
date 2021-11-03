@@ -20,7 +20,19 @@ The email feature requires that the command *sendmail* is working on the machine
 
 ## Installing
 
+```sh
 git clone https://github.com/greenwoodad/filenamefix
+```
+or 
+
+```sh
+git clone https://(your github username)@github.com/greenwoodad/filenamefix.git
+```
+
+followed by:
+```sh
+chmod +x ./filenamefix/filenamefix
+```
 
 ## Getting Started
 
@@ -41,7 +53,9 @@ Options
 										  
 To run this as a cron job, make an entry in your crontab like this:
 
-*/5 * * * * /path/to/filenamefix "/path/to/data"
+```sh
+*/5 * * * * /path/to/filenamefix '/path/to/data'
+```
 
 ## Contributing
 Pull requests are welcome. 
