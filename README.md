@@ -1,6 +1,6 @@
-# filenamefix
+# nmrfolderfix
 
-filenamefix is a bash script for renaming NMR data folders that have problematic names, 
+nmrfolderfix is a bash script for renaming NMR data folders that have problematic names, 
 specifically folders that are identically named except for case differences (which are 
 unique in Linux but indistinguisable on Windows and Mac), as well as for folders that 
 end in a period (which is permissible on Linux and Mac but not on Windows). The purpose
@@ -21,17 +21,17 @@ The email feature requires that the command *sendmail* is working on the machine
 ## Installing
 
 ```sh
-git clone https://github.com/greenwoodad/filenamefix
+git clone https://github.com/greenwoodad/nmrfolderfix
 ```
 or 
 
 ```sh
-git clone https://(your github username)@github.com/greenwoodad/filenamefix.git
+git clone https://(your github username)@github.com/greenwoodad/nmrfolderfix.git
 ```
 
 followed by:
 ```sh
-chmod +x ./filenamefix/filenamefix
+chmod +x ./nmrfolderfix/nmrfolderfix
 ```
 
 ## Getting Started
@@ -41,7 +41,7 @@ chmod +x ./filenamefix/filenamefix
 ## Usage
 
 ```sh
-filenamefix [OPTIONS]... path/to/data
+nmrfolderfix [OPTIONS]... path/to/data
 ```
 Options
  -h, -?, --help                           Show help message.
@@ -54,7 +54,7 @@ Options
 To run this as a cron job, make an entry in your crontab like this:
 
 ```sh
-*/5 * * * * /path/to/filenamefix '/path/to/data'
+*/5 * * * * /path/to/nmrfolderfix '/path/to/data'
 ```
 
 ## Contributing
