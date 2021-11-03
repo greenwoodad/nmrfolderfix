@@ -2,11 +2,7 @@
 
 # nmrfolderfix
 #
-# Copyright 2021 Alex Greenwood
-#
-# This program is free software...
-#
-# This program is distributed with NO WARRANTY...
+# Copyright 2021 University of Cincinnati
 #
 # This program is meant to be run as a cron job to regularly correct the names of NMR data folders
 # that will cause problems on a Windows file system. It checks for folders in user/nmr/ in the specified 
