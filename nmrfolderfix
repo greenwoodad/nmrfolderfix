@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# filenamefix
+# nmrfolderfix
 #
 # Copyright 2021 Alex Greenwood
 #
@@ -44,7 +44,7 @@ function Show_Usage() {
 	echo "                                          folders are renamed."
         echo ""
 	echo "For more information, please see the README file:"
-	echo "https://github.com/greenwoodad/filenamefix/README.md"
+	echo "https://github.com/greenwoodad/nmrfolderfix/README.md"
 	echo ""
 }
 
