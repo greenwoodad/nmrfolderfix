@@ -9,7 +9,7 @@
 # directory with names that either end in a period or that would be identical to names of folders in 
 # the same directory on a case-insensitive file-system (for example, user/nmr/Spectrum and 
 # user/nmr/spectrum). It checks whether all subfolders in the identified directories have fid or 
-# (finished) ser files, ensuring that data isn't currently being acquired in the directory. If data, 
+# (finished) ser files, ensuring that data isn't currently being acquired in the directory. If data 
 # is finished acquiring, the folder name is then fixed (either the period is removed, a (1) or (2) 
 # or (3) etc is appended to it, or both.) In the case of identically-named folders, the program only 
 # renames the most-recently formed folder and the program exits. If there are multiple instances of 
