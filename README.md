@@ -2,7 +2,7 @@
 
 nmrfolderfix is a bash script for renaming NMR data folders that have problematic names, 
 specifically folders that are identically named except for case differences (which are 
-unique in Linux but indistinguisable on Windows and Mac), as well as for folders that 
+unique in Linux but indistinguishable on Windows and Mac), as well as for folders that 
 end in a period (which is permissible on Linux and Mac but not on Windows). The purpose
 is to allow other scripts (such as https://github.com/greenwoodad/nmrsync) to 
 automatically copy data from the Linux file system that the data was collected on to a 
