@@ -23,6 +23,7 @@ set -u
 
 ManagerEmail=''
 SendmailPath='/usr/sbin'
+nmrFolderFlag='y'
 
 ##functions
 
@@ -60,6 +61,10 @@ while [[ ! -z "${1-}" ]] ; do
         	-e|--email)
             		shift
             		ManagerEmail="$1"
+            		;;
+		-n|--nmr)
+            		shift
+            		nmrFolderFlag="$1"
             		;;
                 -*)
 			echo "Unknown option: \"$1\""
@@ -134,10 +139,20 @@ fi
 
 echo "data path = $DataPath"
 
+#Define data path to search (with or without /nmr depending on nmrFolderFlag)
+	
+if [[ $nmrFolderFlag == 'n' ]]; then	
+	nmrFolder=''
+else
+	nmrFolder='/nmr'
+fi
+
+
+
 #This generates a list of names of spectra that end in periods and renames them
 
 #generate a list of file names ending in a period
-PdSpectra=$(find "$DataPath"/*/nmr/*. -maxdepth 0 -type d 2> /dev/null)	
+PdSpectra=$(find "$DataPath"/*$nmrFolder/*. -maxdepth 0 -type d 2> /dev/null)	
 
 if [[ "$PdSpectra" != '' ]]; then
         while IFS= read -r spectrum ; do
@@ -169,7 +184,7 @@ if [[ "$PdSpectra" != '' ]]; then
 	fi
 
         #generate a list of duplicate file names differing only in case, with most recent folders on top
-	DupSpectra=$(find "$DataPath"/*/nmr/* -maxdepth 0 -name .svn -type d -prune -false -o 	\
+	DupSpectra=$(find "$DataPath"/*$nmrFolder/* -maxdepth 0 -name .svn -type d -prune -false -o 	\
 	 -printf "%T@ %Tc %p\n"  | sort -n | grep "$DataPath"'.*' -o | tac | perl -ne 				\
 	'push @{$f{lc($_)}}, $_; END{map{print @{$f{$_}}} grep {@{$f{$_}}>1} sort keys %f}')
 	
