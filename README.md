@@ -48,7 +48,7 @@ Options
 
  -p, --path                               Set path to data (flag optional).
 
- -e, --email (default '')                 Provide an email address to recieve emails when
+ -e, --email (default '')                 Provide an email address to receive emails when
                                           folders are renamed.
 										  
 To run this as a cron job, make an entry in your crontab like this:
