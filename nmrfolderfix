@@ -36,7 +36,7 @@ function Show_Usage() {
 	echo ""
 	echo " -p, --path                               Set path to data (flag optional)."
         echo ""
-	echo " -e, --email (default '')                 Provide an email address to recieve emails when"
+	echo " -e, --email (default '')                 Provide an email address to receive emails when"
 	echo "                                          folders are renamed."
         echo ""
 	echo "For more information, please see the README file:"
