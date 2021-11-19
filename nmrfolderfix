@@ -202,8 +202,7 @@ if [[ "$DupSpectra" != '' ]]; then
 
 while IFS= read -r spectrum ; do
 
-	#spectrum=$(echo "$DupSpectra" | head -1) #Only consider re-naming the most-recently generated spectrum--older spectra have already been copied over
-	NewestSpectrum=$(grep -w -o -i "$spectrum" <<< $DupSpectra | head -1)	
+	NewestSpectrum=$(grep -w -o -i "$spectrum" <<< $DupSpectra | head -1) #Only consider re-naming the most-recently generated folder 
 	subfolders=$(find "$NewestSpectrum"/* -maxdepth 0 -type d)
 	MoveFlag='y'
       		
