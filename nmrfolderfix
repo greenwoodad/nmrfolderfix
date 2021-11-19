@@ -144,7 +144,7 @@ if ! [[ -d $DataPath ]]; then
 	exit 1
 fi
 
-DataPath=$(echo "$DataPath | sed 's:/*$::') #Remove any trailing / from DataPath
+DataPath=$(echo "$DataPath" | sed 's:/*$::') #Remove any trailing / from DataPath
 
 echo "data path = $DataPath"
 
@@ -155,8 +155,6 @@ if [[ $nmrFolderFlag == 'n' ]]; then
 else
 	nmrFolder='/nmr'
 fi
-
-
 
 #This generates a list of names of spectra that end in periods and renames them
 
