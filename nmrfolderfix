@@ -121,9 +121,12 @@ newnamebase="$1"
 newname="$newnamebase"
 
 for ((i=1;i<100;i++)); do
-	if ! [[ -d "$newname" ]]; then
+
+	ExistsAlready=$(find "$DataPath" -maxdepth 3 -type d -iwholename $newname -print -quit)
+
+	if ! [[ -n "$ExistsAlready" ]]; then
 		break
-	else 
+	else
 		newname="$newnamebase($i)"
 	fi
 
@@ -192,7 +195,7 @@ if [[ "$PdSpectra" != '' ]]; then
 	 -printf "%T@ %Tc %p\n"  | sort -n | grep "$DataPath"'.*' -o | tac | perl -ne 				\
 	'push @{$f{lc($_)}}, $_; END{map{print @{$f{$_}}} grep {@{$f{$_}}>1} sort keys %f}')
 	
-	UniqSpectra=$(echo "$DupSpectra | uniq -di)
+	UniqSpectra=$(echo "$DupSpectra" | uniq -di)
 	
 #Rename most recent duplicate spectrum
 if [[ "$DupSpectra" != '' ]]; then
@@ -222,7 +225,6 @@ while IFS= read -r spectrum ; do
                         echo "no email address"
                 fi
 
-		exit 1
 	fi
 	done < <(echo "${UniqSpectra}")
 
