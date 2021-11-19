@@ -96,7 +96,7 @@ function Send_Email () {
 }
 
 #This function checks and makes sure there are (non-empty) fid or (not updated in past 30 min) ser files in
-#all subdirectories of $spectrum
+#all subdirectories of spectrum
  
 function findfids () {
 
