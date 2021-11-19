@@ -122,7 +122,7 @@ newname="$newnamebase"
 
 for ((i=1;i<100;i++)); do
 
-	ExistsAlready=$(find "$DataPath" -maxdepth 3 -type d -iwholename $newname -print -quit)
+	ExistsAlready=$(find "$DataPath" -maxdepth $MaxDepthNMR -type d -iwholename $newname -print -quit)
 
 	if ! [[ -n "$ExistsAlready" ]]; then
 		break
@@ -152,8 +152,10 @@ echo "data path = $DataPath"
 	
 if [[ $nmrFolderFlag == 'n' ]]; then	
 	nmrFolder=''
+	MaxDepthNMR=2
 else
 	nmrFolder='/nmr'
+	MaxDepthNMR=3
 fi
 
 #This generates a list of names of spectra that end in periods and renames them
