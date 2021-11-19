@@ -122,7 +122,7 @@ newname="$newnamebase"
 
 for ((i=1;i<100;i++)); do
 
-	ExistsAlready=$(find "$DataPath" -maxdepth $MaxDepthNMR -type d -iwholename $newname -print -quit)
+	ExistsAlready=$(find "$DataPath" -maxdepth $MaxDepthNMR -type d -iwholename "$newname" -print -quit)
 
 	if ! [[ -n "$ExistsAlready" ]]; then
 		break
