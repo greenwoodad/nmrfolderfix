@@ -192,38 +192,35 @@ if [[ "$PdSpectra" != '' ]]; then
 	 -printf "%T@ %Tc %p\n"  | sort -n | grep "$DataPath"'.*' -o | tac | perl -ne 				\
 	'push @{$f{lc($_)}}, $_; END{map{print @{$f{$_}}} grep {@{$f{$_}}>1} sort keys %f}')
 	
-#Rename them
+#Rename most recent duplicate spectrum
 if [[ "$DupSpectra" != '' ]]; then
 
-	while IFS= read -r spectrum ; do
+	spectrum=$(echo "$DupSpectra" | head -1) #Only consider re-naming the most-recently generated spectrum--older spectra have already been copied over
 		
-		subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
-		MoveFlag='y'
+	subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
+	MoveFlag='y'
       		
+	findfids
+	if [[ "$MoveFlag" == 'y' ]]; then
+		sleep 10 #This is to make sure a new spectrum wasn't just about to start
+		subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
 		findfids
-		if [[ "$MoveFlag" == 'y' ]]; then
-			sleep 10 #This is to make sure a new spectrum wasn't just about to start
-			subfolders=$(find "$spectrum"/* -maxdepth 0 -type d)
-			findfids
-		fi
+	fi
 	
-		if [[ "$MoveFlag" == 'y' ]]; then
-			getname "$spectrum"
-			mv "$spectrum" "$newname"
-			echo "$spectrum renamed to $newname"
+	if [[ "$MoveFlag" == 'y' ]]; then
+		getname "$spectrum"
+		mv "$spectrum" "$newname"
+		echo "$spectrum renamed to $newname"
 
-                        if ! [[ "$ManagerEmail" == '' ]]; then
+                if ! [[ "$ManagerEmail" == '' ]]; then
                                 Send_Email "$ManagerEmail"
-                        else
-                                echo "no email address"
-                        fi
+                else
+                        echo "no email address"
+                fi
 
-			exit 1
-		fi
-
-    	done < <(echo "${DupSpectra}")
+		exit 1
+	fi
 	
 fi	
-	
-	
+		
 exit 1
