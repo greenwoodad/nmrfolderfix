@@ -139,8 +139,10 @@ done
 parse_flags "$@"
 
 #Exit if data path is not properly specified
-if ! [[ -d $DataPath ]]; then
-	echo "$DataPath does not exist. Exiting."
+if ! [[ -d ${DataPath-} ]]; then
+	echo "Data Path ${DataPath-} does not exist. Exiting."
+	echo ""
+	Show_Usage
 	exit 1
 fi
 
