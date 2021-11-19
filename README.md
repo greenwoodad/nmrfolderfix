@@ -47,6 +47,10 @@ Options
  -h, -?, --help                           Show help message.
 
  -p, --path                               Set path to data (flag optional).
+ 
+ -n, --nmr (default 'y')                  Set to 'y' for the default /(user)/nmr/(data set)/(expt #)
+                                          data organization. Set it to 'n' for data organized as
+                                          /(user)/(data set)/(expt #)
 
  -e, --email (default '')                 Provide an email address to receive emails when
                                           folders are renamed.
