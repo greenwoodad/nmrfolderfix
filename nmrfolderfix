@@ -144,6 +144,8 @@ if ! [[ -d $DataPath ]]; then
 	exit 1
 fi
 
+DataPath=$(echo "$DataPath | sed 's:/*$::') #Remove any trailing / from DataPath
+
 echo "data path = $DataPath"
 
 #Define data path to search (with or without /nmr depending on nmrFolderFlag)
