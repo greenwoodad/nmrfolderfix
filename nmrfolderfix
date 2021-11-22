@@ -223,7 +223,7 @@ while IFS= read -r spectrum ; do
 		echo "$NewestSpectrum renamed to $newname"
 
                 if ! [[ "$ManagerEmail" == '' ]]; then
-                                Send_Email "$ManagerEmail"
+                        Send_Email "$ManagerEmail"
                 else
                         echo "no email address"
                 fi
