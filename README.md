@@ -62,7 +62,7 @@ To run this as a cron job, make an entry in your crontab like this:
 ```
 
 ## Contributing
-Pull requests are welcome. 
+Pull requests and bug reports are welcome. 
 
 ## Authors
 
