@@ -102,7 +102,7 @@ function findfids () {
 
 	while IFS= read -r subfolder ; do
 		echo "looking in $subfolder"
-        	if [[ -s "$subfolder/fid" || `find $subfolder/ser -mmin +30 | egrep '.*'` ]]; then
+        	if [[ -s "$subfolder/fid" || `find "$subfolder/ser" -mmin +30 | egrep '.*'` ]]; then
 	                echo "there's a fid or finished ser"
                 else
                         MoveFlag='n'
