@@ -8,8 +8,8 @@
 # that will cause problems on a Windows file system. It checks for folders in user/nmr/ in the specified 
 # directory with names that either end in a period or that would be identical to names of folders in 
 # the same directory on a case-insensitive file-system (for example, user/nmr/Spectrum and 
-# user/nmr/spectrum). It checks whether all subfolders in the identified directories have fid or 
-# (finished) ser files, ensuring that data isn't currently being acquired in the directory. If data 
+# user/nmr/spectrum). It checks whether all subfolders in the identified directories have finished 
+# fid or ser files, ensuring that data isn't currently being acquired in the directory. If data 
 # is finished acquiring, the folder name is then fixed (either the period is removed, a (1) or (2) 
 # or (3) etc is appended to it, or both.) In the case of identically-named folders, the program only 
 # renames the most-recently formed folder and the program exits. If there are multiple instances of 
@@ -95,14 +95,14 @@ function Send_Email () {
 } | "$SendmailPath"/sendmail -t
 }
 
-#This function checks and makes sure there are (non-empty) fid or (not updated in past 30 min) ser files in
-#all subdirectories of spectrum
+#This function checks and makes sure there are fid or ser files in
+#all subdirectories of spectrum not updated within last 10 mins
  
 function findfids () {
 
 	while IFS= read -r subfolder ; do
 		echo "looking in $subfolder"
-        	if [[ -s "$subfolder/fid" || `find "$subfolder/ser" -mmin +30 | egrep '.*'` ]]; then
+        	if [[ `find "$subfolder/fid" -mmin +10 | egrep '.*'` || `find "$subfolder/ser" -mmin +10 | egrep '.*'` ]]; then
 	                echo "there's a fid or finished ser"
                 else
                         MoveFlag='n'
