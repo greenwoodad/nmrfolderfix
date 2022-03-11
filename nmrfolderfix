@@ -100,13 +100,23 @@ function Send_Email () {
  
 function findfids () {
 
-	while IFS= read -r subfolder ; do
-		echo "looking in $subfolder"
-        	if [[ `find "$subfolder/fid" -mmin +10 | egrep '.*'` || `find "$subfolder/ser" -mmin +10 | egrep '.*'` ]]; then
-	                echo "there's a fid or finished ser"
+        while IFS= read -r subfolder ; do
+                echo "looking in $subfolder"
+                if [[ `find "$subfolder/ser" -mmin +10 | egrep '.*'` ]]; then
+                        echo "there's a finished ser"
+                elif [[ `find "$subfolder/fid" -mmin +10 | egrep '.*'` &&  `find "$subfolder/pulseprogram" -mmin +10 | egrep $
+                        fiddate=$(date -r "$subfolder/fid" +%s)
+                        pulseprogramdate=$(date -r "$subfolder/pulseprogram" +%s)
+                        pulseprogramdateplussec=$(($pulseprogramdate + 1))
+                        if [[ "$fiddate" -gt "$pulseprogramdateplussec" ]]; then
+                                echo "there's a finished fid"
+                        else
+                                echo "there's a fid but it's not finished"
+                                MoveFlag='n'
+                        fi
                 else
                         MoveFlag='n'
-			echo "no fid or ser yet-- skip this for now"
+                        echo "no fid or ser yet-- skip this for now"
                 fi
         done < <(echo "${subfolders}")
 
