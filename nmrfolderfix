@@ -104,7 +104,7 @@ function findfids () {
                 echo "looking in $subfolder"
                 if [[ `find "$subfolder/ser" -mmin +10 | egrep '.*'` ]]; then
                         echo "there's a finished ser"
-                elif [[ `find "$subfolder/fid" -mmin +10 | egrep '.*'` &&  `find "$subfolder/format.temp" -mmin +10 | egrep  egrep '.*'` ]]; then
+                elif [[ `find "$subfolder/fid" -mmin +10 | egrep '.*'` &&  `find "$subfolder/format.temp" -mmin +10 | egrep '.*'` ]]; then
                         fiddate=$(date -r "$subfolder/fid" +%s)
                         formatdate=$(date -r "$subfolder/format.temp" +%s)
                         formatdateplussec=$(($formatdate + 1))
