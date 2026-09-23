@@ -62,6 +62,13 @@ To run this as a cron job, make an entry in your crontab like this:
 */5 * * * * /path/to/nmrfolderfix '/path/to/data'
 ```
 
+## Note on Mail
+Users may occasionally save processed data of spectra loaded in Topspin after the folder has been renamed. This 
+will (re)generate a folder with the original dataset name but no fid or ser file. The script will treat this like
+still-acquiring data and output a message to the spool mail in /var/spool/mail/username every time it is run. 
+This is basically harmless but may be considered clutter and will cause the mail file to grow unnecessarily large.
+Future versions may deal with this.
+
 ## Contributing
 Pull requests and bug reports are welcome. 
 
